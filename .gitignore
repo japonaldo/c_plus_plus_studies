@@ -1,0 +1,25 @@
+# Build directories
+**/\.build*
+**/GNU*Debug/**
+**/GNU*Release/**
+
+# vim temporary files
+*.swp
+*.swo
+
+# Eclipse related
+*.settings/
+
+# Binary files
+output/**
+*.o
+*.so
+*.d
+*.out
+*.bin
+*.map
+
+# temporarily folders
+.patches
+
+
