@@ -11,17 +11,35 @@ namespace tests
 namespace examples
 {
 
+IntVec::IntVec(std::shared_ptr<int> counter, size_t num)
+    :
+    counter_(counter),
+    size_(num),
+    data_(new int[size_])
+{
+  Log("Constructor: IntVec(std::shared_ptr<int> counter, size_t num)");
+  if (counter_)
+  {
+    ++(*counter_);
+  }
+}
+
 IntVec::IntVec(size_t num)
     :
     size_(num),
     data_(new int[size_])
 {
-  Log("Constructor");
+  Log("Constructor: IntVec(size_t num)");
 }
 
 IntVec::~IntVec()
 {
   Log("Destructor");
+  if (counter_)
+  {
+    ++(*counter_);
+  }
+
   if (data_)
   {
     delete[] data_;
@@ -31,12 +49,18 @@ IntVec::~IntVec()
 
 IntVec::IntVec(const IntVec &other)
     :
+    counter_(other.counter_),
     size_(other.size_),
     data_(new int[size_])
 {
   Log("copy constructor");
 
   std::memcpy(data_, other.data_, sizeof(*data_) * size_);
+
+  if (counter_)
+  {
+    ++(*counter_);
+  }
 }
 
 IntVec& IntVec::operator=(const IntVec &other)
@@ -50,6 +74,7 @@ IntVec& IntVec::operator=(const IntVec &other)
 
 void IntVec::Fill(int val)
 {
+  Log("Fill(int val)");
   for (size_t i = 0; i < size_; ++i)
   {
     data_[i] = val;
