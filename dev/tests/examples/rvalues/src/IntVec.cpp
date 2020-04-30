@@ -72,6 +72,14 @@ IntVec& IntVec::operator=(const IntVec &other)
   return *this;
 }
 
+IntVec& IntVec::operator=(IntVec &&other)
+{
+  Log("move assignment operator");
+  std::swap(size_, other.size_);
+  std::swap(data_, other.data_);
+  return *this;
+}
+
 void IntVec::Fill(int val)
 {
   Log("Fill(int val)");

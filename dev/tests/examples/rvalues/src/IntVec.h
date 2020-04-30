@@ -29,6 +29,8 @@ class IntVec
 
   IntVec& operator=(const IntVec &other);
 
+  IntVec& operator=(IntVec&& other);
+
   void Fill(int val);
 
   const size_t size() const
