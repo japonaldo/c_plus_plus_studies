@@ -15,12 +15,6 @@ namespace examples
 class IntVecMock : public IntVec
 {
  public:
-  explicit IntVecMock(std::shared_ptr<int> counter, size_t num = 0)
-      :
-      IntVec(counter, num)
-  {
-  }
-
   explicit IntVecMock(size_t num = 0)
       :
       IntVec(num)
