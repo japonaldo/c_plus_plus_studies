@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <iostream>
-#include <memory>
 
 #include <gtest/gtest_prod.h>
 
@@ -20,7 +19,6 @@ namespace examples
 class IntVec
 {
  public:
-  explicit IntVec(std::shared_ptr<int> counter, size_t num = 0);
   explicit IntVec(size_t num = 0);
 
   virtual ~IntVec();
@@ -29,7 +27,7 @@ class IntVec
 
   IntVec& operator=(const IntVec &other);
 
-  IntVec& operator=(IntVec&& other);
+  IntVec& operator=(IntVec &&other);
 
   void Fill(int val);
 
@@ -43,13 +41,15 @@ class IntVec
     return data_[index];
   }
 
+  int* get()
+  {
+    return data_;
+  }
+
  protected:
   virtual void Log(const char *msg);
 
  private:
-  // it could perfectly be a raw pointer (int* counter_),
-  // the intention is to exercise the use of std::shared_ptr, though
-  std::shared_ptr<int> counter_;
   size_t size_;
   int *data_;
 

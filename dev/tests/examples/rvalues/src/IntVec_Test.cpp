@@ -93,61 +93,28 @@ TEST(IntVec_Test, AssigmentOperator)
   }
 }
 
-TEST(IntVec_Test, CtorCalls)
+TEST(IntVec_Test, MoveAssigmentOperator)
 {
   const size_t kVecSize = 20;
 
-  std::shared_ptr<int> counter_v1 = std::make_shared<int>(0);
   {
-    IntVecMock v1(counter_v1, kVecSize);
+    IntVec v1(kVecSize);
+    IntVec v2;
 
-    EXPECT_EQ(*counter_v1, 1);
-  }
-  EXPECT_EQ(*counter_v1, 2);
-}
-
-TEST(IntVec_Test, AssigmentOperatorCtorCalls)
-{
-  const size_t kVecSize = 20;
-
-  std::shared_ptr<int> counter_v1 = std::make_shared<int>(0);
-  std::shared_ptr<int> counter_v2 = std::make_shared<int>(0);
-  {
-    IntVec v1(counter_v1, kVecSize);
-    IntVec v2(counter_v2);
-
-    EXPECT_EQ(*counter_v1, 1);
-    EXPECT_EQ(*counter_v2, 1);
-
-    v2 = v1;
-
-    EXPECT_EQ(*counter_v1, 3);
-    EXPECT_EQ(*counter_v2, 1);
-  }
-  EXPECT_EQ(*counter_v1, 4);
-  EXPECT_EQ(*counter_v2, 2);
-}
-
-TEST(IntVec_Test, MoveAssigmentOperatorCtorCalls)
-{
-  const size_t kVecSize = 20;
-
-  std::shared_ptr<int> counter_v1 = std::make_shared<int>(0);
-  std::shared_ptr<int> counter_v2 = std::make_shared<int>(0);
-  {
-    IntVec v1(counter_v1, kVecSize);
-    IntVec v2(counter_v2);
-
-    EXPECT_EQ(*counter_v1, 1);
-    EXPECT_EQ(*counter_v2, 1);
+    v1.Fill(0xdeadbeef);
 
     v2 = std::move(v1);
 
-    EXPECT_EQ(*counter_v1, 1);
-    EXPECT_EQ(*counter_v2, 1);
+    EXPECT_EQ(v1.size(), 0);
+    EXPECT_EQ(v1.get(), nullptr);
+    EXPECT_EQ(v2.size(), kVecSize);
+    EXPECT_NE(v2.get(), nullptr);
+
+    for (size_t i = 0; i < kVecSize; ++i)
+    {
+      EXPECT_EQ(v2.at(i), 0xdeadbeef);
+    }
   }
-  EXPECT_EQ(*counter_v1, 2);
-  EXPECT_EQ(*counter_v2, 2);
 }
 
 }
