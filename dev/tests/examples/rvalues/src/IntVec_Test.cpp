@@ -2,7 +2,7 @@
 #include <cstring>
 #include <memory>
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "mocks/IntVecMock.h"
 #include "IntVec.h"
@@ -125,6 +125,28 @@ TEST(IntVec_Test, AssigmentOperatorCtorCalls)
     EXPECT_EQ(*counter_v2, 1);
   }
   EXPECT_EQ(*counter_v1, 4);
+  EXPECT_EQ(*counter_v2, 2);
+}
+
+TEST(IntVec_Test, MoveAssigmentOperatorCtorCalls)
+{
+  const size_t kVecSize = 20;
+
+  std::shared_ptr<int> counter_v1 = std::make_shared<int>(0);
+  std::shared_ptr<int> counter_v2 = std::make_shared<int>(0);
+  {
+    IntVec v1(counter_v1, kVecSize);
+    IntVec v2(counter_v2);
+
+    EXPECT_EQ(*counter_v1, 1);
+    EXPECT_EQ(*counter_v2, 1);
+
+    v2 = std::move(v1);
+
+    EXPECT_EQ(*counter_v1, 1);
+    EXPECT_EQ(*counter_v2, 1);
+  }
+  EXPECT_EQ(*counter_v1, 2);
   EXPECT_EQ(*counter_v2, 2);
 }
 
