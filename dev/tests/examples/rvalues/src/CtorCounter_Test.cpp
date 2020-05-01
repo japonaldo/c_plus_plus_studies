@@ -9,12 +9,22 @@ namespace tests
 namespace examples
 {
 
-TEST(CtorCounter_Test, CopyCtorCounter)
+class CtorCounter_Test : public ::testing::Test
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
+  void SetUp()
+  {
+    CtorCounter<int>::copyctor_counter_ = 0;
+    CtorCounter<int>::movector_counter_ = 0;
+    CtorCounter<int>::dtor_counter_ = 0;
+  }
 
+  void TearDown()
+  {
+  }
+};
+
+TEST_F(CtorCounter_Test, CopyCtorCounter)
+{
   {
     CtorCounter<int> obj_1(10);
 
@@ -32,12 +42,8 @@ TEST(CtorCounter_Test, CopyCtorCounter)
   EXPECT_EQ(CtorCounter<int>::dtor_counter_, 2);
 }
 
-TEST(CtorCounter_Test, MoveCtorCounter)
+TEST_F(CtorCounter_Test, MoveCtorCounter)
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
-
   {
     CtorCounter<int> obj_1(10);
 
@@ -57,12 +63,8 @@ TEST(CtorCounter_Test, MoveCtorCounter)
   EXPECT_EQ(CtorCounter<int>::dtor_counter_, 2);
 }
 
-TEST(CtorCounter_Test, CopyAssignmentCounter)
+TEST_F(CtorCounter_Test, CopyAssignmentCounter)
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
-
   {
     CtorCounter<int> obj_1(10);
     CtorCounter<int> obj_2;
@@ -83,12 +85,8 @@ TEST(CtorCounter_Test, CopyAssignmentCounter)
   EXPECT_EQ(CtorCounter<int>::dtor_counter_, 3);
 }
 
-TEST(CtorCounter_Test, MoveAssignmentCounter)
+TEST_F(CtorCounter_Test, MoveAssignmentCounter)
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
-
   {
     CtorCounter<int> obj_1(10);
     CtorCounter<int> obj_2;
@@ -145,8 +143,8 @@ class ForceCopyCtor
      2 - std::move not only doesn’t actually move anything,
      it doesn’t even guarantee that the object it’s casting will be eligible
      to be moved.
-     The only thing you know for sure about the result of applying
-     std::move to an object is that it’s an rvalue
+     The only thing you know for sure about the result of applying std::move
+     to an object is that it’s an rvalue
      */
   }
 
@@ -162,12 +160,8 @@ class ForceCopyCtor
   CtorCounter<int> value_;
 };
 
-TEST(CtorCounter_Test, ForceCopyCtor)
+TEST_F(CtorCounter_Test, ForceCopyCtor)
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
-
   {
     // this shall not invoke CtorCounter's copy constructor
     ForceCopyCtor force_copyctor(CtorCounter<int>(10));
@@ -186,12 +180,8 @@ TEST(CtorCounter_Test, ForceCopyCtor)
   EXPECT_EQ(CtorCounter<int>::dtor_counter_, 2);
 }
 
-TEST(CtorCounter_Test, Force2CopyCtor)
+TEST_F(CtorCounter_Test, Force2CopyCtor)
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
-
   {
     CtorCounter<int> ctor(10);
 
@@ -208,12 +198,8 @@ TEST(CtorCounter_Test, Force2CopyCtor)
   EXPECT_EQ(CtorCounter<int>::dtor_counter_, 3);
 }
 
-TEST(CtorCounter_Test, TryMoveLocalCtorCounter)
+TEST_F(CtorCounter_Test, TryMoveLocalCtorCounter)
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
-
   {
     CtorCounter<int> ctor(10);
 
@@ -234,12 +220,8 @@ TEST(CtorCounter_Test, TryMoveLocalCtorCounter)
   EXPECT_EQ(CtorCounter<int>::dtor_counter_, 3);
 }
 
-TEST(CtorCounter_Test, TryMoveCtorCounter)
+TEST_F(CtorCounter_Test, TryMoveCtorCounter)
 {
-  CtorCounter<int>::copyctor_counter_ = 0;
-  CtorCounter<int>::movector_counter_ = 0;
-  CtorCounter<int>::dtor_counter_ = 0;
-
   {
     // this line, as in the previous test,
     // shall also invoke CtorCounter's Move Constructor
