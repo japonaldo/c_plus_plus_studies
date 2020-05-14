@@ -202,8 +202,8 @@ TEST_F(Rvo_Test, MakeCtorCounterNRVOByValueParam)
     CtorCounter<int> counter = MakeCtorCounterNRVO<int>(CtorCounter<int>(10),
                                                         20);
 
-    EXPECT_EQ(CtorCounter<int>::copyctor_counter_, 0); // copy elision performed
-    EXPECT_EQ(CtorCounter<int>::movector_counter_, 1); // move constructor is invoke
+    EXPECT_EQ(CtorCounter<int>::copyctor_counter_, 0);  // copy elision performed
+    EXPECT_EQ(CtorCounter<int>::movector_counter_, 1);  // move constructor is invoke
     EXPECT_EQ(CtorCounter<int>::dtor_counter_, 1);
     EXPECT_EQ(counter.data_, 20);
   }
