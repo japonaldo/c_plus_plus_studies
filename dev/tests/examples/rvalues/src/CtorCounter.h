@@ -74,6 +74,8 @@ class CtorCounter
   T data_;
 };
 
+// TODO change these counters by function pointers,
+//      then update the test cases to use EXPECT_CALL
 template<typename T>
 int CtorCounter<T>::movector_counter_ = 0;
 
