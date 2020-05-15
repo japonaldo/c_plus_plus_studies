@@ -1,11 +1,25 @@
 # TODO add Copyright
 
-file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.h *.cpp)
+include(JmfMacroExecutable)
+include(JmfMacroLibModule)
 
-include_directories(.)
+file(GLOB_RECURSE SOURCES LIST_DIRECTORIES true *.cpp)
 
-set(SOURCES ${SOURCES})
+ADD_JMF_EXECUTABLE(
+  NAME               ${JMF_MODULE_NAME}
+  SRC                ${SOURCES}
+  SYS_INCLUDE_DIRS   SYSTEM
+  INCLUDE_DIRS       ${CMAKE_CURRENT_SOURCE_DIR}
+  LINKER_FLAGS  
+  DEPS
+  )
+  
+set(JMF_MODULE_LIB_NAME ${JMF_UNIT_TEST_PREFIX}${JMF_MODULE_NAME}-static)
 
-add_executable(${JMF_MODULE_NAME} ${SOURCES})
-
-add_library(${JMF_UNIT_TEST_PREFIX}${JMF_MODULE_NAME}-static STATIC ${SOURCES})
+ADD_JMF_LIB_MODULE(
+    NAME               ${JMF_MODULE_LIB_NAME}
+    SRC                ${SOURCES}
+    SYS_INCLUDE_DIRS   SYSTEM
+    INCLUDE_DIRS       ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPS
+)
