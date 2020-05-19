@@ -1,6 +1,7 @@
 #ifndef DEV_TESTS_EXAMPLES_RVALUES_SRC_CTORCOUNTER_H_
 #define DEV_TESTS_EXAMPLES_RVALUES_SRC_CTORCOUNTER_H_
 
+#include <iostream>
 #include <utility>
 
 namespace jmf
@@ -22,6 +23,7 @@ class CtorCounter
       :
       data_(std::forward<T>(val))
   {
+    ++normalctor_counter_;
   }
 
   CtorCounter(const CtorCounter &rhs)
@@ -66,6 +68,12 @@ class CtorCounter
     return *this;
   }
 
+  friend std::ostream& operator<<(std::ostream &stream, const CtorCounter &rhs)
+  {
+    return stream << "CtorCouter: {" << rhs.data_ << "}" << std::endl;
+  }
+
+  static int normalctor_counter_;
   static int movector_counter_;
   static int copyctor_counter_;
   static int dtor_counter_;
@@ -76,6 +84,9 @@ class CtorCounter
 
 // TODO change these counters by function pointers,
 //      then update the test cases to use EXPECT_CALL
+template<typename T>
+int CtorCounter<T>::normalctor_counter_ = 0;
+
 template<typename T>
 int CtorCounter<T>::movector_counter_ = 0;
 

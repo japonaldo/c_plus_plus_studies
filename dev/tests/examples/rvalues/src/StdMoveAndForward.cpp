@@ -245,7 +245,7 @@ TEST(StdMoveAndForward_Test, SetDataTemplateForwardRvalue)
   // this time, it is expected to move "data" into "widget.data_"
   widget.set_data_forward(std::move(data));
 
-  EXPECT_EQ(widget.data_.data_, data_ptr); // widget.data_.data_ has been "moved"
+  EXPECT_EQ(widget.data_.data_, data_ptr);  // widget.data_.data_ has been "moved"
   EXPECT_EQ(widget.data_.length_, 10);     // widget.data_.length "moved" too
   EXPECT_EQ(strcmp(widget.data_.data_, kTestName), 0);  // just to be sure that
                                                         // the contents haven't changed
@@ -257,6 +257,84 @@ TEST(StdMoveAndForward_Test, SetDataTemplateForwardRvalue)
 
 // TODO create test cases to demonstrate the pros and cons of:
 //      set_data(const SomeDataClass&), set_data(SomeDataClass&&)
+
+class PerfectFwTest : public ::testing::Test
+{
+ public:
+  using MyIntCounter = CtorCounter<int>;
+
+ private:
+  void SetUp()
+  {
+    MyIntCounter::normalctor_counter_ = 0;
+    MyIntCounter::copyctor_counter_ = 0;
+    MyIntCounter::movector_counter_ = 0;
+    MyIntCounter::dtor_counter_ = 0;
+  }
+};
+
+template<typename T>
+struct MyWrapper
+{
+  MyWrapper() = delete;
+
+  template<typename Other>
+  MyWrapper(Other &&arg)
+      :
+      data_(std::forward<Other>(arg))
+  {
+  }
+
+  MyWrapper(const MyWrapper&) = delete;
+  MyWrapper(const MyWrapper&&) = delete;
+
+  T data_;
+};
+
+TEST_F(PerfectFwTest, perfect_fw_rvalue)
+{
+  {
+    MyWrapper<MyIntCounter> uniref(10);
+
+    EXPECT_EQ(MyIntCounter::dtor_counter_, 0);
+  }
+
+  EXPECT_EQ(MyIntCounter::normalctor_counter_, 1);
+  EXPECT_EQ(MyIntCounter::copyctor_counter_, 0);
+  EXPECT_EQ(MyIntCounter::movector_counter_, 0);
+  EXPECT_EQ(MyIntCounter::dtor_counter_, 1);
+}
+
+TEST_F(PerfectFwTest, perfect_fw_move)
+{
+  {
+    MyIntCounter my_uniq(10);
+    MyWrapper<MyIntCounter> uniref(std::move(my_uniq));
+
+    EXPECT_EQ(MyIntCounter::dtor_counter_, 0);
+  }
+
+  EXPECT_EQ(MyIntCounter::normalctor_counter_, 1);
+  EXPECT_EQ(MyIntCounter::movector_counter_, 1);
+  EXPECT_EQ(MyIntCounter::copyctor_counter_, 0);
+  EXPECT_EQ(MyIntCounter::dtor_counter_, 2);
+}
+
+TEST_F(PerfectFwTest, perfect_fw_lvalue)
+{
+  {
+    MyIntCounter my_uniq(10);
+    MyWrapper<MyIntCounter> uniref(my_uniq);
+
+    EXPECT_EQ(MyIntCounter::dtor_counter_, 0);
+  }
+
+  EXPECT_EQ(MyIntCounter::copyctor_counter_, 1);
+  EXPECT_EQ(MyIntCounter::normalctor_counter_, 1);
+  EXPECT_EQ(MyIntCounter::movector_counter_, 0);
+  EXPECT_EQ(MyIntCounter::dtor_counter_, 2);
+}
+
 }
 }
 }
