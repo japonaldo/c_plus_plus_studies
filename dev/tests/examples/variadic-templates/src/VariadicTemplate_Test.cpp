@@ -91,6 +91,29 @@ TEST(VariadicTemplate_Test, ArrSize)
   }
 }
 
+template<typename T>
+T AddAny(T t)
+{
+  return t;
+}
+
+template<typename T, typename ... Args>
+T AddAny(T first, Args ... args)
+{
+  return first + AddAny(args...);
+}
+
+TEST(VariadicTemplate_Test, AddAnyInt)
+{
+  EXPECT_EQ(AddAny(1, 1), 2);
+  EXPECT_EQ(AddAny(1, 1, 2, 4), 8);
+  EXPECT_EQ(AddAny(1, 1, 2, 4, 3), 11);
+  EXPECT_EQ(AddAny(1, 1, 2, 4.5, 3), 11);
+  EXPECT_EQ(AddAny(1.5, 1, 2, 4.5, 3.5), 12.5);
+}
+
+
+
 }
 }
 }
