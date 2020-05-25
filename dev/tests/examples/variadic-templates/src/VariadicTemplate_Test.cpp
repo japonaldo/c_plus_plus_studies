@@ -1,3 +1,7 @@
+#include <stddef.h>
+
+#include <iostream>
+
 #include <gtest/gtest.h>
 
 /*
@@ -193,6 +197,67 @@ TEST(VariadicTemplate_Test, ComparePairExpectIntVsDouble)
   static_assert(ComparePair<int>(1, 1.6) == true);
 
   EXPECT_EQ(ComparePair<int>(1, 1.6), true);
+}
+
+template<class ... Ts>
+struct Tuple {};
+
+template<class T, class ... Ts>
+struct Tuple<T, Ts...>  : Tuple<Ts...>
+{
+  Tuple(T t, Ts ... ts) : Tuple<Ts...>(ts...),
+                          value(t)
+  {
+  }
+
+  T value;
+};
+
+template<size_t, class>
+struct ElementTypeHolder {};
+
+template<class T, class... Ts>
+struct ElementTypeHolder<0, Tuple<T, Ts...>>
+{
+  typedef T type;
+};
+
+template<size_t K, class T, class... Ts>
+struct ElementTypeHolder<K, Tuple<T, Ts...>>
+{
+  typedef typename ElementTypeHolder<K - 1, Tuple<Ts...>>::type type;
+};
+
+template<size_t K, class... Ts>
+typename std::enable_if<K == 0, 
+                        typename ElementTypeHolder<0, Tuple<Ts...>>::type&>::type
+get(Tuple<Ts...>& t)
+{
+  return t.value;
+}
+
+template<size_t K, class T, class... Ts>
+typename std::enable_if<K != 0, 
+                        typename ElementTypeHolder<K, Tuple<T, Ts...>>::type&>::type
+get(Tuple<T, Ts...>& t)
+{
+  Tuple<Ts...>& base = t;
+  return get<K - 1, Ts...>(base);
+}
+
+TEST(VariadicTemplate_Test, Tuple)
+{
+  Tuple<int, double, const char*, bool, float> tuple(10,
+                                                     5.5,
+                                                     "My Tuple's String",
+                                                     true,
+                                                     1.5f);
+
+  EXPECT_EQ(get<0>(tuple), 10);
+  EXPECT_EQ(get<1>(tuple), 5.5);
+  EXPECT_EQ(get<2>(tuple), "My Tuple's String");
+  EXPECT_EQ(get<3>(tuple), true);
+  EXPECT_EQ(get<4>(tuple), 1.5f);
 }
 
 }
