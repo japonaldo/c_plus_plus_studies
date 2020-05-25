@@ -1,6 +1,10 @@
 #include <stddef.h>
 
 #include <iostream>
+#include <list>
+#include <map>
+#include <vector>
+#include <utility>
 
 #include <gtest/gtest.h>
 
@@ -258,6 +262,64 @@ TEST(VariadicTemplate_Test, Tuple)
   EXPECT_EQ(get<2>(tuple), "My Tuple's String");
   EXPECT_EQ(get<3>(tuple), true);
   EXPECT_EQ(get<4>(tuple), 1.5f);
+}
+
+template<template<typename, typename...> 
+         class ContainerType, typename ValueType, typename... Args>
+void PrintMyContainer(const ContainerType<ValueType, Args...>& c)
+{
+  std::cout << __PRETTY_FUNCTION__ << std::endl;
+  using std::cout;
+  for (const auto& v : c)
+  {
+    cout << v << ' ';
+  }
+}
+
+template<typename K, typename V>
+std::ostream& operator<<(std::ostream& os, const std::pair<K, V>& p)
+{
+  os << "[" << p.first << ", " << p.second << "]";
+  return os;
+}
+
+TEST(VariadicTemplate_Test, PrintMyVector)
+{
+  std::vector<int> v{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+  PrintMyContainer(v);
+
+  std::cout << std::endl;
+}
+
+TEST(VariadicTemplate_Test, PrintMyList)
+{
+  std::list<int> list{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+
+  PrintMyContainer(list);
+
+  std::cout << std::endl;
+}
+
+TEST(VariadicTemplate_Test, PrintMyMap)
+{
+  std::map<int, std::string> map{
+      {0, "Null"},
+      {1, "Eins"},
+      {2, "Zwei"},
+      {3, "Drei"},
+      {4, "Vier"},
+      {5, "Fünf"},
+      {6, "Sechs"},
+      {7, "Sieben"},
+      {8, "Acht"},
+      {9, "Neun"},
+      {10, "Zehn"},
+  };
+
+  PrintMyContainer(map);
+
+  std::cout << std::endl;
 }
 
 }
