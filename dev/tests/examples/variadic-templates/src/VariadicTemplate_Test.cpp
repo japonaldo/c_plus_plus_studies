@@ -113,25 +113,31 @@ TEST(VariadicTemplate_Test, AddAnyInt)
 }
 
 template<typename T>
-bool ComparePair(T a)
+constexpr bool ComparePair(T a)
 {
   return false;
 }
 
 template<typename T>
-bool ComparePair(T a, T b)
+constexpr bool ComparePair(T a, T b)
 {
   return a == b;
 }
 
 template<typename T, typename ... Args>
-bool ComparePair(T a, T b, Args ... args)
+constexpr bool ComparePair(T a, T b, Args ... args)
 {
   return (a == b) && ComparePair(args...);
 }
 
 TEST(VariadicTemplate_Test, ComparePairIntFalses)
 {
+  static_assert(ComparePair(0) == false);
+  static_assert(ComparePair(0, 1) == false);
+  static_assert(ComparePair(1, 1, 2) == false);
+  static_assert(ComparePair(1, 1, 2, 5) == false);
+  static_assert(ComparePair(1, 1, 2, 2, 6, 3) == false);
+
   EXPECT_EQ(ComparePair(0), false);
   EXPECT_EQ(ComparePair(0, 1), false);
   EXPECT_EQ(ComparePair(1, 1, 2), false);
@@ -141,6 +147,10 @@ TEST(VariadicTemplate_Test, ComparePairIntFalses)
 
 TEST(VariadicTemplate_Test, ComparePairExpectIntTrues)
 {
+  static_assert(ComparePair(1, 1) == true);
+  static_assert(ComparePair(1, 1, 2, 2) == true);
+  static_assert(ComparePair(1, 1, 2, 2, 4, 4) == true);
+
   EXPECT_EQ(ComparePair(1, 1), true);
   EXPECT_EQ(ComparePair(1, 1, 2, 2), true);
   EXPECT_EQ(ComparePair(1, 1, 2, 2, 4, 4), true);
@@ -148,6 +158,12 @@ TEST(VariadicTemplate_Test, ComparePairExpectIntTrues)
 
 TEST(VariadicTemplate_Test, ComparePairDoubleFalses)
 {
+  static_assert(ComparePair(0.0) == false);
+  static_assert(ComparePair(0.75, 1.75) == false);
+  static_assert(ComparePair(1.75, 1.75, 2.99) == false);
+  static_assert(ComparePair(1.75, 1.75, 2.99, 5.99) == false);
+  static_assert(ComparePair(1.75, 1.75, 2.99, 2.99, 6.123, 3.123) == false);
+
   EXPECT_EQ(ComparePair(0.0), false);
   EXPECT_EQ(ComparePair(0.75, 1.75), false);
   EXPECT_EQ(ComparePair(1.75, 1.75, 2.99), false);
@@ -157,6 +173,10 @@ TEST(VariadicTemplate_Test, ComparePairDoubleFalses)
 
 TEST(VariadicTemplate_Test, ComparePairExpectDoubleTrues)
 {
+  static_assert(ComparePair(1.55, 1.55) == true);
+  static_assert(ComparePair(1.55, 1.55, 2.99, 2.99) == true);
+  static_assert(ComparePair(1.55, 1.55, 2.99, 2.99, 4.123, 4.123) == true);
+
   EXPECT_EQ(ComparePair(1.55, 1.55), true);
   EXPECT_EQ(ComparePair(1.55, 1.55, 2.99, 2.99), true);
   EXPECT_EQ(ComparePair(1.55, 1.55, 2.99, 2.99, 4.123, 4.123), true);
@@ -170,6 +190,8 @@ TEST(VariadicTemplate_Test, ComparePairExpectIntVsDouble)
 
   // However, the following compiles and the EXPECT_EQ passes
   // because 1.6 is being implicitly converted to int
+  static_assert(ComparePair<int>(1, 1.6) == true);
+
   EXPECT_EQ(ComparePair<int>(1, 1.6), true);
 }
 
