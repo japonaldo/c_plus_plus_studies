@@ -241,8 +241,13 @@ get(Tuple<Ts...>& t)
 }
 
 template<size_t K, class T, class... Ts>
-typename std::enable_if<K != 0, 
-                        typename ElementTypeHolder<K, Tuple<T, Ts...>>::type&>::type
+using ElementTypeHolder_t = typename ElementTypeHolder<K, Tuple<T, Ts...>>::type;
+
+template<size_t K, class T, class... Ts>
+using ElementTypeHolder_tref = ElementTypeHolder_t<K, T, Ts...>&;
+
+template<size_t K, class T, class... Ts>
+std::enable_if_t<K != 0, ElementTypeHolder_tref<K, T, Ts...>>
 get(Tuple<T, Ts...>& t)
 {
   Tuple<Ts...>& base = t;
