@@ -1,3 +1,6 @@
 [submodule "externals/third_party/googletest"]
 	path = externals/third_party/googletest
 	url = https://github.com/google/googletest/
+[submodule "externals/third_party/nlohmann_json"]
+	path = externals/third_party/nlohmann_json
+	url = git@github.com:nlohmann/json.git
