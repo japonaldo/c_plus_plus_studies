@@ -11,5 +11,5 @@ source $SCRIPT_DIR/color.sh
 source $SCRIPT_DIR/alias.sh
 
 prompt_command () {  
-	PS1="\[$BGreen\]\u@\h\[$txtrst\]:\[$BBlue\]\w\[$txtrst\][\[$BCyan\]${JMF_TARGET_NAME}:$JMF_TARGET_PLAT\[$txtrst\]]\$ "
+	PS1="\[$BGreen\]\u@\h\[$txtrst\]:\[$BBlue\]\W\[$txtrst\][\[$BCyan\]${JMF_TARGET_NAME}:$JMF_TARGET_PLAT\[$txtrst\]]\$ "
 }
