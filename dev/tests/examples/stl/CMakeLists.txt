@@ -3,3 +3,4 @@
 add_subdirectory(bitcoin)
 add_subdirectory(iterators)
 add_subdirectory(multimap)
+add_subdirectory(partitions)
